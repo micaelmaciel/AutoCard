@@ -1,0 +1,5 @@
+#separator:|
+#html:true
+Je souhaite modifier mon assurance <em>ménage</em>.|ménage: família, doméstico.
+Pitié, dis-moi que notre <em>assurance</em> couvre ça.|assurance: seguro.
+Le positionnement commencera à la position <em>courante</em>.|courante: corrente, corrente.
