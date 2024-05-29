@@ -8,7 +8,7 @@ class OptionsWindow(tk.Toplevel):
 
     def __init__(self, sentences: list, searchedWord: str):
         tk.Toplevel.__init__(self)
-        self.geometry("400x400")
+        self.geometry("700x400")
         self.searchedWord = searchedWord
         self._build_choices(sentences)
 
@@ -21,12 +21,26 @@ class OptionsWindow(tk.Toplevel):
         canvas.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
         return canvas
 
+    def _create_dictionary_panel(self, word: str):
+        dictionaryFrame = ttk.Frame(master = self, height = 5, width = 10)
+        dictionaryFrame.pack(expand = True, side = "left")
+
+        wordBase, wordMeanings = requestsHandler.get_word_data(word)
+
+        wordLabel = ttk.Label(master = dictionaryFrame, text = wordBase)
+        wordLabel.pack()
+        
+        meaningsLabel = ttk.Label(master = dictionaryFrame, text = ankiCardsHandler.format_back(wordMeanings))
+        meaningsLabel.pack()
+
     def _build_choices(self, sentences: list):
         buttonStyle = ttk.Style()
         buttonStyle.configure("Big.TButton", padding = (15, 4))
 
+        self._create_dictionary_panel(self.searchedWord)
+
         rootFrame = ttk.Frame(master = self)
-        rootFrame.pack(fill = "both", expand = True)
+        rootFrame.pack(fill = "both", expand = True, side = "right", anchor = "e") # TODO: fix alignment
         scrollCanvas = self._create_canvas_with_scrollbar(rootFrame)
 
         contentFrame = ttk.Frame(scrollCanvas)
@@ -60,9 +74,18 @@ class OptionsWindow(tk.Toplevel):
     
     def reinitialize(self, searchedWord: str, sentences: list):
         self.searchedWord = searchedWord
-        contentFrame = self.winfo_children()[0]
-        contentFrame.destroy()
+        children = self.winfo_children()
+        for child in children:
+            child.destroy()
         self._build_choices(sentences)
 
     def add_card(self, searchedWord: str, chosenSentence: str):
         ankiCardsHandler.add_card_to_txt(searchedWord, chosenSentence)
+
+def main():
+    word, meanings = requestsHandler.get_word_data("devrait")
+    print(word)
+    print(ankiCardsHandler.format_back(meanings))
+
+if __name__ == "__main__":
+    main()

@@ -1,9 +1,9 @@
-import requests
+import requests, time
 from bs4 import BeautifulSoup
 
 def get_page(url: str) -> BeautifulSoup:
     headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+        "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Mobile Safari/537.36"
     }
     session = requests.Session()
     page = session.get(url, headers = headers)
@@ -24,12 +24,15 @@ def get_sentences(word: str) -> list:
 
     return sentencesList
 
-def get_word_meanings(word: str) -> list:
+def get_word_data(word: str) -> tuple:
+    time.sleep(1)
     baseQuery = "https://www.linguee.com.br/portugues-frances/search?source=auto&query="
     pageParsed = get_page(baseQuery + word)
     wordsUnparsed = pageParsed.select('.dictLink.featured')
-    wordsParsed = [word.getText(strip=True) for word in wordsUnparsed]
-    return wordsParsed
+    wordsParsed = [word.getText() for word in wordsUnparsed]
+    baseWord = pageParsed.select_one('[class="dictLink"]').get_text(strip = True)
+
+    return baseWord, wordsParsed
 
 def main():
     baseQuery = "https://www.linguee.com.br/portugues-frances/search?source=frances&query="
