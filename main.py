@@ -1,5 +1,3 @@
-import tkinter as tk
-import ttkbootstrap as ttk
 import customtkinter as ctk
 import requestsHandler
 from optionsWindow import OptionsWindow
@@ -28,14 +26,14 @@ window = ctk.CTk()
 window.title("Anki Card Generator")
 window.geometry("400x250")
 
-searchFrame = ctk.CTkFrame(master = window, fg_color=None)
+searchFrame = ctk.CTkFrame(master = window)
 searchFrame.pack(pady = 20)
 
 word = ctk.StringVar()
 wordField = ctk.CTkEntry(master = searchFrame, textvariable = word)
-wordField.pack(side = "left", padx = 10)
+wordField.pack(side = "left", padx = (0, 10))
 
-searchButton = ctk.CTkButton(master = searchFrame, text = "Pesquisar", command = search_word)
+searchButton = ctk.CTkButton(master = searchFrame, text = "Pesquisar", command = search_word, width = 10)
 searchButton.pack(side = "left")
 
 window.mainloop()

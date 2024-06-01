@@ -1,82 +1,87 @@
-import tkinter as tk
-import ttkbootstrap as ttk
+import customtkinter as ctk
 import requestsHandler
 import ankiCardsHandler
 
-class OptionsWindow(tk.Toplevel):
+class OptionsWindow(ctk.CTkToplevel):
     searchedWord = ''
 
-    def __init__(self, sentences: list, searchedWord: str):
-        tk.Toplevel.__init__(self)
+    def __init__(self, sentences: list, searchedWord: str, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.geometry("700x400")
+
+        self.grid_columnconfigure(0, weight = 1)
+        self.grid_columnconfigure(1, weight = 1)
+        self.grid_rowconfigure(0, weight = 1)
+
         self.searchedWord = searchedWord
+        self.sentences = sentences
+        self.dictionaryPanel = None
+        self.scrollFrame = None
+        self.optionFrames = []
         self._build_choices(sentences)
 
-    def _create_canvas_with_scrollbar(self, rootFrame: ttk.Frame) -> ttk.Canvas:
-        canvas = ttk.Canvas(master = rootFrame)
-        canvas.pack(side = "left", fill = "both", expand = True)
-        scrollbar = tk.Scrollbar(master = rootFrame, orient = tk.VERTICAL, command = canvas.yview)
-        scrollbar.pack(side="right", fill="y")
-        canvas.configure(yscrollcommand=scrollbar.set)
-        canvas.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
-        return canvas
-
     def _create_dictionary_panel(self, word: str):
-        dictionaryFrame = ttk.Frame(master = self, height = 5, width = 10)
-        dictionaryFrame.pack(expand = True, side = "left")
+        if self.dictionaryPanel is not None:
+            self.dictionaryPanel.destroy()
+
+        dictionaryFrame = ctk.CTkFrame(master=self)
+        dictionaryFrame.grid(row = 0, column = 0, sticky = "")
+        dictionaryFrame.grid_columnconfigure(0, minsize = 150, weight = 1)
+        dictionaryFrame.grid_rowconfigure(0, weight = 1, minsize = 75)
+        dictionaryFrame.grid_rowconfigure(1, weight = 1, minsize = 75)
 
         wordBase, wordMeanings = requestsHandler.get_word_data(word)
 
-        wordLabel = ttk.Label(master = dictionaryFrame, text = wordBase)
-        wordLabel.pack()
-        
-        meaningsLabel = ttk.Label(master = dictionaryFrame, text = ankiCardsHandler.format_back(wordMeanings))
-        meaningsLabel.pack()
+        wordLabel = ctk.CTkLabel(master=dictionaryFrame, text=wordBase)
+        wordLabel.grid(row = 0, column = 0, sticky = "s")
+
+        meaningsLabel = ctk.CTkLabel(master=dictionaryFrame, text=ankiCardsHandler.format_back(wordMeanings), wraplength=90)
+        meaningsLabel.grid(row = 1, column = 0, sticky = "n")
+
+        self.dictionaryPanel = dictionaryFrame
 
     def _build_choices(self, sentences: list):
-        buttonStyle = ttk.Style()
-        buttonStyle.configure("Big.TButton", padding = (15, 4))
-
         self._create_dictionary_panel(self.searchedWord)
 
-        rootFrame = ttk.Frame(master = self)
-        rootFrame.pack(fill = "both", expand = True, side = "right", anchor = "e") # TODO: fix alignment
-        scrollCanvas = self._create_canvas_with_scrollbar(rootFrame)
+        if self.scrollFrame is None:
+            self.scrollFrame = ctk.CTkScrollableFrame(master=self, width = 400)
+            self.scrollFrame.grid(row = 0, column = 1, sticky = "nsew")
+            self.scrollFrame.grid_columnconfigure(0, weight = 1)
 
-        contentFrame = ttk.Frame(scrollCanvas)
-        contentFrame.pack(expand = True)
-        scrollCanvas.create_window((0, 0), window = contentFrame, anchor = "nw")
+        for i, sentence in enumerate(sentences):
+            if i < len(self.optionFrames):
+                textWidget, chooseButton, editButton = self.optionFrames[i]
+                textWidget.delete("1.0", "end")
+                textWidget.insert("1.0", sentence)
+                chooseButton.configure(command=lambda id=sentence: self.add_card(self.searchedWord, id))
+            else:
+                optionFrame = ctk.CTkFrame(self.scrollFrame, width = 200, height = 61)
+                optionFrame.grid(row = i, column = 0, pady = 15)
 
-        for i in range(len(sentences)): # maybe use enumerate instead
-            optionFrame = ttk.Frame(contentFrame)
-            optionFrame.pack(side = "top", padx = 15, pady = 15)
+                textWidget = ctk.CTkTextbox(optionFrame, wrap="word", height=61, width=200)
+                textWidget.insert("1.0", sentence)
+                textWidget.grid(row = 0, column = 0)
 
-            labelBackground = ttk.Frame(master = optionFrame)
-            labelBackground.pack(side = "left", padx = 10, fill = "y")
+                buttonFrame = ctk.CTkFrame(optionFrame, width=80)
+                buttonFrame.grid(row = 0, column = 1, padx = 10)
 
-            textWidget = ttk.Text(labelBackground, wrap = "word", height = 2.5, width = 40)
-            textWidget.insert("1.0", sentences[i])
-            textWidget.pack()
+                chooseButton = ctk.CTkButton(master=buttonFrame, text="Add", width=80)
+                chooseButton.configure(command=lambda id=sentence: self.add_card(self.searchedWord, id))
+                chooseButton.grid(row = 0, column = 0, pady=(0, 5))
 
-            buttonFrame = ttk.Frame(optionFrame, height = 2.4)
-            buttonFrame.pack(side = "left", padx = 10)
+                editButton = ctk.CTkButton(master=buttonFrame, text="Editar", width=80)
+                editButton.grid(row = 1, column = 0)
 
-            chooseButton = ttk.Button(master = buttonFrame, 
-                                      text = "Add", 
-                                      style = "Big.TButton", 
-                                      name = str(i), # i = position of the phrase in the list
-                                      width = 6
-                                      )
-            chooseButton.config(command = lambda id=chooseButton.winfo_name(): self.add_card(self.searchedWord, sentences[int(id)]))
-            chooseButton.pack(pady = (0, 5))
-            editButton = ttk.Button(master = buttonFrame, text = "Editar", style = "Big.TButton", width = 6)
-            editButton.pack()
-    
+                self.optionFrames.append((textWidget, chooseButton, editButton))
+
+        for i in range(len(sentences), len(self.optionFrames)):
+            textWidget, chooseButton, editButton = self.optionFrames[i]
+            textWidget.master.pack_forget()
+            self.optionFrames[i] = (textWidget, chooseButton, editButton)
+
     def reinitialize(self, searchedWord: str, sentences: list):
         self.searchedWord = searchedWord
-        children = self.winfo_children()
-        for child in children:
-            child.destroy()
+        self.sentences = sentences
         self._build_choices(sentences)
 
     def add_card(self, searchedWord: str, chosenSentence: str):

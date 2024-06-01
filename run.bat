@@ -1,0 +1,1 @@
+C:\Users\mikae\OneDrive\Documentos\Projects\AnkiCardGenerator\.venv\Scripts\python.exe main.py
