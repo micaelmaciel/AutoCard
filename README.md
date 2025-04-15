@@ -29,7 +29,7 @@ se tiver algum erro com o tkinter, provavelmente tem que baixá-lo antes, e isso
 
 # features
 * palavras no infinitivo e exemplos de frases (uau)
-* dá pra importar em decks já existentes porque tudo que gera é um arquivo para ser... importado
+* dá pra importar em decks já existentes
 * um botão que não faz nada
 
 # motivação
