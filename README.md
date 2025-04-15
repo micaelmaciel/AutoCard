@@ -2,7 +2,7 @@
 não vai ter nenhum por enquanto porque esse foi o meu primeiro projeto "real" em python feito num final de semana, então sabe-se o que se esperar do código :(
 
 # uso
-ao clicar em adicionar palavra, será criado um arquivo txt contendo a sintaxe correta entendida pelo anki com a palavra no infinitivo e o exemplo de frase escolhida na parte de trás do card, então basta importar para o anki para o deck de sua escolha
+ao clicar em adicionar palavra, será criado um arquivo txt contendo a sintaxe correta entendida pelo anki, então basta importar para o anki para o deck de sua escolha
 
 existem alternativas bilhões de vezes melhores (chatgpt) e eu nem sei se ainda funciona, mas se por alguma razão quiser usar, basta rodar os seguintes comandos
 ```console
