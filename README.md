@@ -6,6 +6,8 @@ ao clicar em adicionar palavra, será criado um arquivo txt contendo a sintaxe c
 
 existem alternativas bilhões de vezes melhores (chatgpt) e eu nem sei se ainda funciona, mas se por alguma razão quiser usar, basta rodar os seguintes comandos
 ```console
+git clone https://github.com/micaelmaciel/AutoCard.git autocard
+cd autocard
 python -m venv venv
 source venv/bin/active
 pip install -r requirements
