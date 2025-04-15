@@ -1,6 +1,6 @@
 
 # releases
-não vai ter nenhum por enquanto porque esse foi o meu primeiro projeto "real" em python feito num final de semana, então sabe-se o que se esperar do código :(
+não vai ter nenhum por enquanto porque esse foi o meu primeiro projeto "real" em python feito num final de semana, então sabe-se o que esperar do código :(
 
 # uso
 ao clicar em adicionar palavra, será criado um arquivo txt contendo a sintaxe correta entendida pelo anki, então basta importar para o anki para o deck de sua escolha
