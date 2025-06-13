@@ -5,7 +5,6 @@ não vai ter nenhum por enquanto porque esse foi o meu primeiro projeto "real" e
 # uso
 ao clicar em adicionar palavra, será criado um arquivo txt contendo a sintaxe correta entendida pelo anki, então basta importar para o anki para o deck de sua escolha
 
-existem alternativas bilhões de vezes melhores (chatgpt) e eu nem sei se ainda funciona, mas se por alguma razão quiser usar, basta rodar os seguintes comandos
 ## linux
 ```console
 git clone https://github.com/micaelmaciel/AutoCard.git autocard
